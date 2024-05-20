@@ -1,24 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Products from './components/Products/Products'
+import { Login } from './components/Login/Login';
+
+function parseJwt(token) {
+  try {
+    const base64url = token.split('.')[1]
+    const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/')
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16).slice(-2))
+    }).join(''))
+    console.log(jsonPayload)
+
+    return JSON.parse(jsonPayload)
+  } catch (err) {
+    console.log(err)
+    return false
+  }
+}
+
+let tokenValid = (localStorage.getItem('token'));
+console.log(tokenValid)
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {tokenValid ? <Products /> : <Login />}
+    </>
+    // <BrowserRouter>
+    //   <Routes>
+    //     <Route path='/' element={<Products></Products>}></Route>
+    //   </Routes>
+    // </BrowserRouter>
   );
 }
 
